@@ -39,10 +39,6 @@ builder.Services
     .Configure<ForwardedHeadersOptions>(options =>
     {
         options.ForwardedHeaders = ForwardedHeaders.All;
-    })
-    .Configure<RouteOptions>(options =>
-    {
-        options.ConstraintMap.Add(BrowsePrefixConstraint.PrefixName, typeof(BrowsePrefixConstraint));
     });
 
 var app = builder.Build();
