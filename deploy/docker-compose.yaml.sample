@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  files:
+    image: ${PRIVATE_REGISTRY}/files.javiercampos.info:latest
+    user: "1001"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:80"
+    environment:
+      - "Options:HideDotFiles=false"
+      - "AccessLogDb:DbPath=/data/db/access.db"
+    volumes:
+      - ./files:/data/files
+      - ./db:/data/db
