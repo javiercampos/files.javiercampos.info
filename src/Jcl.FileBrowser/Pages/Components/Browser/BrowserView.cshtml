@@ -1,0 +1,102 @@
+﻿@using Jcl.FileBrowser.Utils
+@using Microsoft.AspNetCore.Html
+@model BrowserViewModel
+@{
+    Layout = null;
+}
+@if (Model is null)
+{
+    throw new InvalidOperationException("Invalid model");
+}
+
+<vc:route-breadcrumb parameters="@(new RouteBreadcrumbParameters(Model.Route))" />
+
+<div id="listing">
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col" style="width: 40px">&nbsp;</th>
+            <th scope="col">
+                <a href="@BuildSortingGetParameter('N')">Name @GetSortingChevronImgTag('N')</a>
+            </th>
+            <th scope="col">
+                <a href="@BuildSortingGetParameter('M')">Last modified @GetSortingChevronImgTag('M')</a>
+            </th>
+            <th scope="col">
+                <a href="@BuildSortingGetParameter('S')">Size @GetSortingChevronImgTag('S')</a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var entry in Model.Entries)
+        {
+            <tr>
+                <td class="tblIcon">
+                    @if (entry.IconUrl is not null)
+                    {
+                        <img src="@entry.IconUrl" style="width: 32px; height: 32px; display: inline-block;" alt="@entry.DisplayName"/>
+                    }
+                </td>
+                <td class="tblName">
+                    <a href="@(entry.Path + BuildSortingNavParameter())">@entry.DisplayName</a>
+                </td>
+                <td class="tblLastMod">@entry.LastModified</td>
+                <td class="tblSize">
+                    @if (entry.FileSize is null)
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        @entry.FileSize.Value.ToAutomaticFileSize()    
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@functions {
+    string BuildSortingNavParameter()
+    {
+        if (Model?.Sorting == null || Model.Sorting.Length != 2 || (Model.Sorting[0] != 'A' && Model.Sorting[0] != 'D'))
+        {
+            return string.Empty;
+        }
+        return "?s=" + Model.Sorting;
+    }
+    string? GetSortParameter(char field)
+    {
+        if (Model?.Sorting == null || Model.Sorting.Length != 2 || Model.Sorting[1] != field || (Model.Sorting[0] != 'A' && Model.Sorting[0] != 'D'))
+        {
+            return "A" + field;
+        }
+        return Model.Sorting[0] switch
+        {
+            'A' => "D" + field,
+            'D' => null,
+            _ => null
+            };
+    }
+    string BuildSortingGetParameter(char field)
+    {
+        var fld = GetSortParameter(field);
+        if (fld == null) return "?";
+        return "?s=" + fld;
+    }
+    static HtmlString BuildChevron(bool isUp) => new("<img src=\"/img/chevron-" + (isUp?"up":"down") + ".svg\" class=\"chevron\" alt=\"" + (isUp?"up":"down") + "\" />");
+    HtmlString GetSortingChevronImgTag(char field)
+    {
+        if (Model?.Sorting == null || Model.Sorting.Length != 2 || Model.Sorting[1] != field || (Model.Sorting[0] != 'A' && Model.Sorting[0] != 'D'))
+        {
+            return new HtmlString("");
+        }
+        return Model.Sorting[0] switch
+        {
+            'A' => BuildChevron(true),
+            'D' => BuildChevron(false),
+            _ => new HtmlString("")
+            };
+    }
+}

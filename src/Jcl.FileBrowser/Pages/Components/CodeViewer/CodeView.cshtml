@@ -1,0 +1,10 @@
+﻿@model CodeViewerModel
+@{
+    Layout = null;
+}
+@if (Model is null)
+{
+    throw new InvalidOperationException("Invalid model");
+}
+<vc:route-breadcrumb parameters="@(new RouteBreadcrumbParameters(Model.FileRoute, true))" />
+<pre><code class="@("language-" + Model.Language.ToLowerInvariant())">@Model.Text</code></pre>

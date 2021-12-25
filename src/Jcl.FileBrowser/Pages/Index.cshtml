@@ -1,0 +1,27 @@
+﻿@page "{*route}"
+@model IndexModel
+
+<div class="h-100">
+    @switch (Model.ViewType)
+    {
+        case ViewType.Browser:
+            <vc:browser route="@Model.BrowserRoute" sorting="@Model.BrowserSort" />
+            break;
+
+        case ViewType.CodeViewer:
+            <vc:code-viewer route="@Model.CodeViewerRoute" language="@Model.CodeViewerLanguage"/>
+@section Css {
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/atom-one-dark.min.css">
+}
+@section Scripts {
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/languages/apache.min.js"></script>
+    <script>hljs.highlightAll();</script>
+}
+            break;
+        default:
+            <span>Error</span>
+            break;
+    }
+</div>

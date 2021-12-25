@@ -1,0 +1,30 @@
+﻿@model RouteBreadcrumbModel
+@{
+    Layout = null;
+}
+@if (Model?.RouteParts is null)
+{
+    throw new InvalidOperationException("Invalid route");
+}
+
+<div class="header">
+    @foreach (var ((display, link, iconUrl), index) in Model.RouteParts.Select((x, i) => (x, i)))
+    {
+        @if (index != 0)
+        {
+            <span>/</span>
+        }
+        @if(iconUrl is not null)
+        {
+            <img src="@iconUrl" style="width: 32px; height: 32px; display:  inline-block" alt="@display"/>
+        }
+        @if (link is not null)
+        {
+            <a href="@link">@display</a>    
+        }
+        else
+        {
+            <span>@display</span>
+        }
+    }
+</div>
