@@ -14,12 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Jcl: add framework services
 builder.Services
     .AddLogging(loggingBuilder =>
-                    loggingBuilder.AddSimpleConsole(options =>
-                    {
-                        options.IncludeScopes = true;
-                        options.SingleLine = true;
-                        options.TimestampFormat = "hh:mm:ss ";
-                    }))
+        loggingBuilder.AddSimpleConsole(options =>
+        {
+            options.IncludeScopes = true;
+            options.SingleLine = true;
+            options.TimestampFormat = "hh:mm:ss ";
+        }))
     .AddRazorPages();
 
 // Jcl: add application services
@@ -36,24 +36,29 @@ builder.Services
 builder.Services
     .Configure<AccessLogOptions>(builder.Configuration.GetSection("AccessLogDb"))
     .Configure<GlobalOptions>(builder.Configuration.GetSection("Options"))
-    .Configure<ForwardedHeadersOptions>(options =>
-    {
-        options.ForwardedHeaders = ForwardedHeaders.All;
-    });
+    .Configure<ForwardedHeadersOptions>(options => { options.ForwardedHeaders = ForwardedHeaders.All; });
 
-var app = builder.Build();
+await using var app = builder.Build();
+ILogger? logger = null;
 
 try
 {
+    logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Initialization");
     var globalOptions = app.Services.GetRequiredService<IOptions<GlobalOptions>>().Value;
 
-    Console.WriteLine("Initializing " + globalOptions.SiteTitle);
+    logger.LogInformation("Initializing {Title}", globalOptions.SiteTitle);
     if (args.Any(x => x == "--debug-config"))
     {
-        Console.WriteLine(((IConfigurationRoot)app.Services.GetRequiredService<IConfiguration>()).GetDebugView());    
+        logger.LogInformation("Configuration information: {Config}", ((IConfigurationRoot)app.Services.GetRequiredService<IConfiguration>()).GetDebugView());
     }
+
     ConfigurationChecker.AssertConfiguration(globalOptions);
     CacheETagUtils.Initialize(globalOptions);
+
+    await using (var accessDbInitializer = app.Services.GetRequiredService<IAccessLogRepositoryInitialization>())
+    {
+        await accessDbInitializer.InitializeAsync();
+    }
 
     app.UseForwardedHeaders();
     if (!app.Environment.IsDevelopment())
@@ -67,7 +72,14 @@ try
 }
 catch (Exception e)
 {
-    Console.Error.WriteLine("Initialization exception: " + e);
+    if (logger is null)
+    {
+        await Console.Error.WriteLineAsync("Initialization exception: " + e);
+    }
+    else
+    {
+        logger.LogError(e, "Initialization exception: {Exception}", e.Message);
+    }
     return -1;
 }
 
@@ -78,6 +90,6 @@ try
 }
 catch (Exception e)
 {
-    Console.Error.WriteLine("Runtime exception: " + e);
+    logger.LogError(e, "Initialization exception: {Exception}", e.Message);
     return -1;
 }
