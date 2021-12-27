@@ -21,6 +21,7 @@ builder.Services
             options.TimestampFormat = "hh:mm:ss ";
         }))
     .AddRazorPages();
+builder.Services.AddHealthChecks();
 
 // Jcl: add application services
 builder.Services
@@ -66,6 +67,7 @@ try
         app.UseExceptionHandler("/Error");
     }
 
+    app.UseHealthChecks("/healthcheck");
     app.UseStaticFiles();
     app.UseRouting();
     app.MapRazorPages();
@@ -85,7 +87,7 @@ catch (Exception e)
 
 try
 {
-    app.Run();
+    await app.RunAsync();
     return 0;
 }
 catch (Exception e)

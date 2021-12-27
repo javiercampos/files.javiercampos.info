@@ -7,6 +7,8 @@ ARG USERID
 ARG USERNAME
 ENV Urls http://*:80
 ENV Options:BaseFolder /data/files
+HEALTHCHECK  --interval=5s --timeout=10s --retries=3 CMD curl --fail http://localhost:80/healthcheck || exit 1
+RUN apk --no-cache add curl
 RUN adduser --disabled-password --home /app --uid $USERID --gecos '' $USERNAME \
     && mkdir -p /data/files \
     && chown -R $USERNAME /app \
