@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.Net.Http.Headers;
 using EntityTagHeaderValue = System.Net.Http.Headers.EntityTagHeaderValue;
 

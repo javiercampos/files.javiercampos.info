@@ -8,7 +8,7 @@ public sealed class AccessLogRepository : IAccessLogRepository, IAccessLogReposi
     private readonly IOptions<AccessLogOptions> _options;
     private readonly ILogger<AccessLogRepository> _logger;
     private readonly SQLiteAsyncConnection? _connection;
-    private int _initialized = 0;
+    private int _initialized;
     
     private static readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 
