@@ -4,15 +4,31 @@ namespace Jcl.FileBrowser.Utils;
 
 public static class EnumerableUtils
 {
-    public static IEnumerable<T> OrderByNaturalSort<T>(this IEnumerable<T> source, Func<T, string> selector)
+    private static IEnumerable<T> OrderByNaturalSortImpl<T>(this IEnumerable<T> source, Func<T, string> selector,
+        bool ascending, int? max)
     {
-        var max = source.SelectMany(i => Regex.Matches(selector(i), @"\d+").Select(m => (int?)m.Value.Length)).Max() ?? 0;
-        return source.OrderBy(i => Regex.Replace(selector(i), @"\d+", m => m.Value.PadLeft(max, '0') + (max - m.Value.Length)));
-    }
-    public static IEnumerable<T> OrderByNaturalSortDescending<T>(this IEnumerable<T> source, Func<T, string> selector)
-    {
-        var max = source.SelectMany(i => Regex.Matches(selector(i), @"\d+").Select(m => (int?)m.Value.Length)).Max() ?? 0;
-        return source.OrderByDescending(i => Regex.Replace(selector(i), @"\d+", m => m.Value.PadLeft(max, '0') + (max - m.Value.Length)));
+        if (max is null)
+        {
+            // Jcl: do not enumerate deferred execution multiple times
+            source = source.ToArray();
+            max = source.SelectMany(i => Regex.Matches(selector(i), @"\d+").Select(m => (int?)m.Value.Length)).Max() ??
+                  0;
+        }
+
+        string OrderByFn(T i) => Regex.Replace(selector(i), @"\d+",
+            m => m.Value.PadLeft(max.Value, '0') + (max.Value - m.Value.Length));
+
+        return ascending ? source.OrderBy(OrderByFn) : source.OrderByDescending(OrderByFn);
     }
 
+    public static IEnumerable<T> OrderByNaturalSort<T>(this IEnumerable<T> source, Func<T, string> selector,
+        int? max = null)
+    {
+        return source.OrderByNaturalSortImpl(selector, true, max);
+    }
+
+    public static IEnumerable<T> OrderByNaturalSortDescending<T>(this IEnumerable<T> source, Func<T, string> selector, int? max = null)
+    {
+        return source.OrderByNaturalSortImpl(selector, false, max);
+    }
 }
