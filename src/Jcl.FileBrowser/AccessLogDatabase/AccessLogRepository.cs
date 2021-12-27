@@ -3,12 +3,12 @@ using SQLite;
 
 namespace Jcl.FileBrowser.AccessLogDatabase;
 
-public sealed class AccessLogRepository : IAccessLogRepository, IAsyncDisposable
+public sealed class AccessLogRepository : IAccessLogRepository, IAccessLogRepositoryInitialization
 {
     private readonly IOptions<AccessLogOptions> _options;
     private readonly ILogger<AccessLogRepository> _logger;
-    private SQLiteAsyncConnection? _connection;
-    private bool _initialized;
+    private readonly SQLiteAsyncConnection? _connection;
+    private int _initialized = 0;
     
     private static readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 
@@ -16,22 +16,30 @@ public sealed class AccessLogRepository : IAccessLogRepository, IAsyncDisposable
     {
         _options = options;
         _logger = logger;
+        if (options.Value.Enabled)
+        {
+            _logger.LogTrace("Initializing SQLite Connection to {Path}", _options.Value.DbPath);
+            _connection = new SQLiteAsyncConnection(_options.Value.DbPath);    
+        }
     }
 
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         if (!_options.Value.Enabled) return;
-        
-        if (_initialized) return;
+        if (_connection == null) throw new InvalidOperationException("No available SQLite connection");
         await InitializationSemaphore.WaitAsync();
         try
         {
-            if (_initialized) return;
-            _logger.LogInformation("Initializing SQLite Connection to {Path}", _options.Value.DbPath);
-            _connection = new SQLiteAsyncConnection(_options.Value.DbPath);
-            _logger.LogInformation("Migrating DB");            
-            await _connection.CreateTableAsync(typeof(AccessLog));
-            _initialized = true;
+            if (Interlocked.Exchange(ref _initialized, 1) == 0)
+            {
+                _logger.LogInformation("Migrating SQLite database {Path}", _options.Value.DbPath);
+                await _connection.CreateTableAsync(typeof(AccessLog));
+            }
+        }
+        catch
+        {
+            Interlocked.Exchange(ref _initialized, 0);
+            throw;
         }
         finally
         {
@@ -42,12 +50,7 @@ public sealed class AccessLogRepository : IAccessLogRepository, IAsyncDisposable
     public async Task LogAccessAsync(AccessLogType type, string route, string? remoteIp)
     {
         if (!_options.Value.Enabled) return;
-
-        await InitializeAsync();
-        if (_connection is null)
-        {
-            throw new InvalidOperationException("Can't access database");
-        }
+        if (_connection == null) throw new InvalidOperationException("No available SQLite connection");
         var accessLog = new AccessLog(type.ToString(), route, remoteIp);
         await _connection.InsertAsync(accessLog);
     }
