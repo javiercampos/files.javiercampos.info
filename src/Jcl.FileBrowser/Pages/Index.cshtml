@@ -1,15 +1,15 @@
 ﻿@page "{*route}"
 @model IndexModel
 
-<div class="h-100">
+<div class="h-100 d-flex flex-column">
     @switch (Model.ViewType)
     {
         case ViewType.Browser:
-            <vc:browser route="@Model.BrowserRoute" sorting="@Model.BrowserSort" />
+            <vc:browser route="@Model.Route" sorting="@Model.BrowserSort" />
             break;
 
         case ViewType.CodeViewer:
-            <vc:code-viewer route="@Model.CodeViewerRoute" language="@Model.CodeViewerLanguage"/>
+            <vc:code-viewer route="@Model.Route" language="@Model.CodeViewerLanguage"/>
 @section Css {
     <link rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/atom-one-dark.min.css">

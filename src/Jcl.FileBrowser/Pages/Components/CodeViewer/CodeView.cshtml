@@ -7,4 +7,5 @@
     throw new InvalidOperationException("Invalid model");
 }
 <vc:route-breadcrumb parameters="@(new RouteBreadcrumbParameters(Model.FileRoute, true))" />
-<pre><code class="@("language-" + Model.Language.ToLowerInvariant())">@Model.Text</code></pre>
+
+<pre class="hljs main-content"><code class="@("language-" + Model.Language.ToLowerInvariant())">@Model.Text</code></pre>

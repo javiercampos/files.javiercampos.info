@@ -1,5 +1,9 @@
 html {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
   font-size: 14px;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -7,16 +11,10 @@ html {
     font-size: 16px;
   }
 }
-
-html {
-  position: relative;
-  height: 100%;
-  min-height: 100%;
-}
-
 body {
   min-height: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 a, a:visited, a:focus {text-decoration: none !important; }
@@ -24,19 +22,17 @@ a:hover {text-decoration: underline !important; }
 
 pre {
   margin-bottom: 0;
-  /* Header size + header vertical margin */
-  max-height: calc(100% - 4rem);
+  width: 100%;
   height: 100%;
-  overflow: auto auto;
+  overflow: auto;
   tab-size: 2;
 }
 pre code {
   min-height: 100%;
+  min-width: 100%;
 }
-
-pre code.hljs
-{
-  overflow-x: visible !important;
+pre code.hljs {
+  overflow: visible !important;
 }
 
 img.chevron
@@ -46,11 +42,32 @@ img.chevron
 }
 
 .header {
-  font-size: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.main-content
+{
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.breadcrumb-content {
+  font-size: 1.4rem;
   font-weight: 300;
   line-height: 1.2;
-  height: 3.5rem;
   margin-bottom: 0.5rem;
   margin-left: 0.5rem;
   padding-top: 0.5rem;
+}
+@media (min-width: 768px) {
+  .breadcrumb-content {
+    font-size: 2rem;
+  }
+}
+
+#filebrowser > td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

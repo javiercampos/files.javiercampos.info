@@ -26,24 +26,23 @@ public class IndexModel : PageModel
     private readonly IOptions<GlobalOptions> _options;
     private readonly IWebHostEnvironment _environment;
 
-    private string? _browserRoute;
+    private string? _route;
 
     public ViewType ViewType { get; private set; }
 
     public string? BrowserSort { get; set; }
-    public string? BrowserRoute
+    
+    public string? Route
     {
-        get => _browserRoute;
+        get => _route;
         private set
         {
-            _browserRoute = value;
-            ViewData["Title"] = _options.Value.BuildPathWithSiteTitle(_browserRoute);
+            _route = value;
+            ViewData["Title"] = _options.Value.BuildPathWithSiteTitle(_route);
         }
     }
 
     public string? CodeViewerLanguage { get; private set; }
-    public string? CodeViewerRoute { get; private set; }
-
 
     public IndexModel(IMimeTypeMapper mimeTypeMapper, IRelativePathManager relativePathManager,
         ICodeViewerManager codeViewerManager, IAccessLogRepository accessLogRepository,
@@ -106,7 +105,7 @@ public class IndexModel : PageModel
         }
 
         ViewType = ViewType.Browser;
-        BrowserRoute = route;
+        Route = route;
         BrowserSort = sortOrder;
         await _accessLogRepository.LogAccessAsync(AccessLogType.Browse, route, GetRemoteIp());
 
@@ -139,7 +138,7 @@ public class IndexModel : PageModel
             if (language is not null)
             {
                 ViewType = ViewType.CodeViewer;
-                CodeViewerRoute = route;
+                Route = route;
                 CodeViewerLanguage = language;
                 showViewer = true;
             }
