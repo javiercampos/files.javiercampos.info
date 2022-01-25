@@ -10,8 +10,8 @@
     "tailwindcss": "^3.0.16"
   },
   "scripts": {
-    "css:build": "npx tailwind build -i ./css/site.css -o ./wwwroot/css/site.css",
-    "css:build-prod": "npx tailwind build -i ./css/site.css -o ./wwwroot/css/site.min.css --minify"
+    "css:build": "npx tailwind build -i ./Css/site.css -o ./wwwroot/css/site.css",
+    "css:build-prod": "npx tailwind build -i ./Css/site.css -o ./wwwroot/css/site.min.css --minify"
   },
   "keywords": [],
   "author": "",
