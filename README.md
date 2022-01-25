@@ -6,6 +6,8 @@ It's a small project made in a few hours during Xmas boredom, to subsitute a ver
 The source code is presented as-is, and you can use it for any purposes you want. It's made in ASP.NET Core using Razor Pages, in .NET 6.
 It uses icons from [fileicons.org](https://fileicons.org/), [highlight.js](https://highlightjs.org/) for the source code viewer syntax highlighter, [sqlite-net-pcl](https://github.com/praeclarum/sqlite-net) for an optional simple sqlite access log database, and [SixLabors ImageSharp](https://sixlabors.com/products/imagesharp/) for the thumbnail generation (respective licenses noted in THIRD-PARTY-NOTICES).
 
+It also uses [TailwindCSS](https://tailwindcss.com/) for main CSS styling.
+
 Otherwise the rest of the code is mine.
 
 ## Warning

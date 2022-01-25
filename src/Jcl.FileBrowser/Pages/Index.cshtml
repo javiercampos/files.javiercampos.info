@@ -1,7 +1,7 @@
 ﻿@page "{*route}"
 @model IndexModel
 
-<div class="h-100 d-flex flex-column">
+<div class="h-full flex flex-col">
     @switch (Model.ViewType)
     {
         case ViewType.Browser:
@@ -11,8 +11,8 @@
         case ViewType.CodeViewer:
             <vc:code-viewer route="@Model.Route" language="@Model.CodeViewerLanguage"/>
 @section Css {
-    <link rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/atom-one-dark.min.css">
+    <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/atom-one-dark.min.css">-->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/monokai.min.css">
 }
 @section Scripts {
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>

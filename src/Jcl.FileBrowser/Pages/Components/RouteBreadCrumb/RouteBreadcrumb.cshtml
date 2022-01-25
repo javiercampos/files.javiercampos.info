@@ -7,18 +7,18 @@
     throw new InvalidOperationException("Invalid route");
 }
 
-<div class="header">
-    <div class="breadcrumb-content">
+<div class="m-0 p-0">
+    <div class="mb-2 ml-2 pt-2 text-2xl font-light md:text-4xl">
         @foreach (var ((display, link, iconUrl), index) in Model.RouteParts.Select((x, i) => (x, i)))
         {
             @if (index != 0)
             {
-                <span class="breadcrumb-separator">/</span>
+                <span>/</span>
             }
-            <span class="breadcrumb-item text-nowrap">
+            <span class="whitespace-nowrap">
                 @if (iconUrl is not null)
                 {
-                    <img src="@iconUrl" style="width: 32px; height: 32px; display:  inline-block" alt="@display"/>
+                    <img src="@iconUrl" class="browserIcon" alt="@display"/>
                 }
                 @if (link is not null)
                 {
