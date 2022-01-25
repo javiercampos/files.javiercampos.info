@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Folder Include="wwwroot\css" />
         <Folder Include="wwwroot\img\icons" />
     </ItemGroup>
 
@@ -20,4 +21,15 @@
         <None Remove="access.db" />
     </ItemGroup>
 
+    <ItemGroup>
+        <UpToDateCheckBuilt Include="Css\site.css" Set="Css" />
+        <UpToDateCheckBuilt Include="postcss.config.js" Set="Css" />
+        <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
+    </ItemGroup>
+
+    <Target Name="Tailwind" BeforeTargets="Build">
+        <Exec Command="npm run css:build" />
+        <Exec Command="npm run css:build-prod" />
+    </Target>
+    
 </Project>

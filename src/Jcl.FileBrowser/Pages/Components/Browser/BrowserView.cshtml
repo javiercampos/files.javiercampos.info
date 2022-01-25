@@ -11,37 +11,37 @@
 
 <vc:route-breadcrumb parameters="@(new RouteBreadcrumbParameters(Model.Route))" />
 
-<div id="filebrowser" class="main-content">
-    <table class="table table-sm">
-        <thead>
+<div id="filebrowser" class="overflow-auto grow">
+    <table class="w-full mb-4 text-gray-800 align-top border-gray-200">
+        <thead class="align-bottom">
         <tr>
-            <th scope="col" style="width: 40px">&nbsp;</th>
-            <th scope="col">
+            <th scope="col" class="text-left p-1 empty">&nbsp;</th>
+            <th scope="col" class="text-left p-1">
                 <a href="@BuildSortingGetParameter('N')">Name @GetSortingChevronImgTag('N')</a>
             </th>
-            <th scope="col">
+            <th scope="col" class="text-left p-1">
                 <a href="@BuildSortingGetParameter('M')">Last modified @GetSortingChevronImgTag('M')</a>
             </th>
-            <th scope="col">
+            <th scope="col" class="text-left p-1">
                 <a href="@BuildSortingGetParameter('S')">Size @GetSortingChevronImgTag('S')</a>
             </th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="border-t-2">
         @foreach (var entry in Model.Entries)
         {
-            <tr>
-                <td class="tblIcon">
+            <tr class="border-b">
+                <td class="p-1 truncate">
                     @if (entry.IconUrl is not null)
                     {
-                        <img src="@entry.IconUrl" style="width: 32px; height: 32px; display: inline-block;" alt="@entry.DisplayName"/>
+                        <img src="@entry.IconUrl" class="browserIcon" alt="@entry.DisplayName"/>
                     }
                 </td>
-                <td class="tblName">
+                <td class="p-1 truncate">
                     <a href="@(entry.Path + BuildSortingNavParameter())">@entry.DisplayName</a>
                 </td>
-                <td class="tblLastMod">@entry.LastModified</td>
-                <td class="tblSize">
+                <td class="p-1 truncate">@entry.LastModified</td>
+                <td class="p-1 truncate">
                     @if (entry.FileSize is null)
                     {
                         <span>-</span>

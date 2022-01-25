@@ -1,0 +1,55 @@
+/*! @import */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+@layer base {
+  html {
+    @apply relative;
+    @apply h-full;
+    @apply min-h-full;
+    @apply overflow-hidden;
+    @apply text-sm;
+    @apply md:text-base;
+  }
+}
+
+a {
+  @apply text-blue-600;
+  @apply visited:no-underline;
+  @apply focus:no-underline;
+  @apply hover:underline;
+}
+
+pre {
+  @apply mb-0;
+  @apply w-full;
+  @apply h-full;
+  @apply overflow-auto;
+  tab-size: 2;
+}
+
+pre code {
+  @apply min-w-full;
+  @apply min-h-full;
+}
+
+th.empty {
+  width: 40px;
+}
+
+img.chevron {
+  width: 0.7rem;
+  height: 1rem;
+  @apply inline-block;
+}
+
+img.browserIcon {
+  width: 32px;
+  height: 32px;
+  @apply inline-block;
+}
+
